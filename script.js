@@ -34,14 +34,17 @@ let questions = [
 let startButton = document.getElementById("start-button");
 let container = document.querySelector(".container");
 let newContainer = createNewElement("div", "question-container");
+let checker = createNewElement("div", "checker");
 let question = createNewElement("h1", "question");
 let timer = document.querySelector(".time");
 let counter = 0;
 let secondsLeft = 75;
 
-function createNewElement(element, classTitle) {
+function createNewElement(element, classTitle, id, onClickResponse) {
   let newItem = document.createElement(element);
   newItem.setAttribute("class", classTitle);
+  newItem.setAttribute("id", id);
+  newItem.setAttribute("onClick", onClickResponse);
   return newItem;
 }
 
@@ -50,25 +53,31 @@ function setTime() {
     secondsLeft--;
     timer.textContent = secondsLeft;
 
-    if (secondsLeft === 0) {
+    if (secondsLeft === 0 || secondsLeft < 0) {
       clearInterval(timerInterval);
     }
+    checker.textContent = "";
   }, 1000);
 }
 
 startButton.addEventListener("click", function(e) {
+  let target = e.target;
   setTime();
   container.removeChild(container.childNodes[1]);
-  console.log(question);
   question.textContent = questions[0].title;
   newContainer.appendChild(question);
   container.appendChild(newContainer);
   for (let i = 0; i < 4; i++) {
-    let button = createNewElement("button", "btn");
-    button.textContent = questions[0].choices[i];
+    let button = createNewElement(
+      "button",
+      "btn",
+      questions[counter].choices[i],
+      "reply_click(this.id)"
+    );
+    button.textContent = questions[counter].choices[i];
     newContainer.appendChild(button);
+    console.log(button);
   }
-  counter++;
 });
 
 newContainer.addEventListener("click", function(e) {
@@ -78,7 +87,20 @@ newContainer.addEventListener("click", function(e) {
     question.textContent = questions[counter].title;
     for (let i = 0; i < 4; i++) {
       buttons[i].textContent = questions[counter].choices[i];
+      buttons[i].setAttribute("id", questions[counter].choices[i]);
     }
-    counter++;
   }
 });
+
+function reply_click(clicked_id) {
+  console.log(clicked_id);
+  if (clicked_id !== questions[counter].answer) {
+    secondsLeft -= 15;
+    checker.textContent = "You are wrong";
+  } else {
+    checker.textContent = "You are right";
+  }
+  newContainer.appendChild(checker);
+  console.log(questions[counter].answer);
+  counter++;
+}
