@@ -37,7 +37,6 @@ let newContainer = createNewElement("div", "question-container");
 let checker = createNewElement("div", "checker");
 let question = createNewElement("h1", "question");
 let timer = document.querySelector(".time");
-// let highscoreContainer = document.querySelector(".highscore-container");
 let submit = createNewElement("button", "submit");
 let submitButton = document.querySelector(".submit");
 let inputField = createNewElement("input", "final-score");
@@ -77,13 +76,17 @@ function setTime() {
     timer.textContent = secondsLeft;
 
     if (secondsLeft === 0 || secondsLeft < 0 || counter === questions.length) {
+      if (secondsLeft < 0) {
+        timer.textContent = 0;
+      }
       clearInterval(timerInterval);
       localStorage.setItem("highscore", timer.textContent);
       timer.textContent = "";
-      for (let i = 0; i <= container.childNodes.length; i++) {
-        container.removeChild(container.childNodes[0]);
+      while (container.childNodes.length !== 0) {
+        for (let i = 0; i <= container.childNodes.length; i++) {
+          container.removeChild(container.childNodes[0]);
+        }
       }
-      // container.removeChild(container.childNodes[2]);
       question.textContent = "You are done!";
       container.appendChild(question);
       announcer.textContent =
@@ -166,11 +169,10 @@ submit.addEventListener("click", function(e) {
       scores.shift();
     }
   }
-  let emtpySpace =
-    // window.location.href = "http://127.0.0.1:5500/Pokemon-quiz/highscores.html";
-    scores.push(
-      localStorage.getItem("initials") + " " + localStorage.getItem("highscore")
-    );
+
+  scores.push(
+    localStorage.getItem("initials") + " " + localStorage.getItem("highscore")
+  );
   for (let i = 0; i <= container.childNodes.length; i++) {
     container.removeChild(container.childNodes[0]);
   }
@@ -237,8 +239,10 @@ startButtonAgain.addEventListener("click", function(e) {
 });
 
 clearAll.addEventListener("click", function(e) {
-  for (let i = 0; i < list.childNodes.length; i++) {
-    list.removeChild(list.childNodes[0]);
+  while (list.childNodes.length !== 0) {
+    for (let i = 0; i <= list.childNodes.length; i++) {
+      list.removeChild(list.childNodes[0]);
+    }
   }
-  console.log(list);
+  console.log(list.childNodes.length);
 });
