@@ -31,14 +31,37 @@ let questions = [
   }
 ];
 
-let startButton = document.getElementById("start-button");
+let startButton = document.querySelector("#start-button");
 let container = document.querySelector(".container");
 let newContainer = createNewElement("div", "question-container");
 let checker = createNewElement("div", "checker");
 let question = createNewElement("h1", "question");
 let timer = document.querySelector(".time");
+// let highscoreContainer = document.querySelector(".highscore-container");
+let submit = createNewElement("button", "submit");
+let submitButton = document.querySelector(".submit");
+let inputField = createNewElement("input", "final-score");
+let initials = createNewElement("span", "initials");
+let initialContainer = createNewElement("div", "initial-container");
+let score = createNewElement("div", "score");
+let announcer = createNewElement("div", "announcer");
+let list = createNewElement("ul", "list");
+let highScoreContainer = createNewElement("div", "highscore-container");
+let buttonContainer = createNewElement("div", "button-container");
+let goBackButton = createNewElement("button", "back");
+let goBack = document.querySelector(".back");
+let clearAll = createNewElement("button", "clear");
+let pokemonIntro = createNewElement("div", "pokemon-intro");
+let pokemonHeading = createNewElement("h1", "heading");
+let pokemonPara = createNewElement("p", "para");
+let startButtonAgain = createNewElement(
+  "button",
+  "start-button",
+  "start-button"
+);
 let counter = 0;
 let secondsLeft = 75;
+let scores = [];
 
 function createNewElement(element, classTitle, id, onClickResponse) {
   let newItem = document.createElement(element);
@@ -53,8 +76,27 @@ function setTime() {
     secondsLeft--;
     timer.textContent = secondsLeft;
 
-    if (secondsLeft === 0 || secondsLeft < 0) {
+    if (secondsLeft === 0 || secondsLeft < 0 || counter === questions.length) {
       clearInterval(timerInterval);
+      localStorage.setItem("highscore", timer.textContent);
+      timer.textContent = "";
+      for (let i = 0; i <= container.childNodes.length; i++) {
+        container.removeChild(container.childNodes[0]);
+      }
+      // container.removeChild(container.childNodes[2]);
+      question.textContent = "You are done!";
+      container.appendChild(question);
+      announcer.textContent =
+        "Your final score is " + localStorage.getItem("highscore");
+      container.appendChild(announcer);
+      container.appendChild(initialContainer);
+      initials.textContent = "Your initials";
+      initials.appendChild(inputField);
+      initials.appendChild(submit);
+      submit.textContent = "Submit";
+      initialContainer.appendChild(initials);
+
+      console.log(container.childNodes);
     }
     checker.textContent = "";
   }, 1000);
@@ -84,6 +126,13 @@ newContainer.addEventListener("click", function(e) {
   let target = e.target;
   let buttons = document.querySelectorAll(".btn");
   if (target.matches("button")) {
+    if (counter === questions.length || counter > questions.length) {
+      for (let i = 0; i <= 4; i++) {
+        newContainer.removeChild(newContainer.childNodes[0]);
+      }
+      console.log(newContainer);
+      return;
+    }
     question.textContent = questions[counter].title;
     for (let i = 0; i < 4; i++) {
       buttons[i].textContent = questions[counter].choices[i];
@@ -104,3 +153,92 @@ function reply_click(clicked_id) {
   console.log(questions[counter].answer);
   counter++;
 }
+
+submit.addEventListener("click", function(e) {
+  localStorage.setItem("initials", inputField.value);
+  for (let i = 0; i < scores.length; i++) {
+    if (scores.length === 0) {
+      break;
+    } else {
+      scores[i] = "";
+    }
+    if (scores[i] === "") {
+      scores.shift();
+    }
+  }
+  let emtpySpace =
+    // window.location.href = "http://127.0.0.1:5500/Pokemon-quiz/highscores.html";
+    scores.push(
+      localStorage.getItem("initials") + " " + localStorage.getItem("highscore")
+    );
+  for (let i = 0; i <= container.childNodes.length; i++) {
+    container.removeChild(container.childNodes[0]);
+  }
+  container.removeChild(container.childNodes[0]);
+  question.textContent = "Highscores";
+  container.appendChild(highScoreContainer);
+  highScoreContainer.appendChild(question);
+  renderScores();
+  highScoreContainer.appendChild(list);
+  goBackButton.textContent = "Go Back";
+  clearAll.textContent = "Clear All";
+  buttonContainer.appendChild(goBackButton);
+  buttonContainer.appendChild(clearAll);
+  highScoreContainer.appendChild(buttonContainer);
+  console.log(scores);
+});
+
+function renderScores() {
+  for (let i = 0; i < scores.length; i++) {
+    let finalScore = scores[i];
+    let listItem = createNewElement("li", "list-item");
+    listItem.textContent = finalScore;
+    list.appendChild(listItem);
+    console.log(list);
+  }
+}
+
+goBackButton.addEventListener("click", function(e) {
+  container.removeChild(container.childNodes[0]);
+  container.appendChild(pokemonIntro);
+  pokemonHeading.textContent = "Pokemon Quiz Challenge";
+  pokemonPara.textContent =
+    "Are you the very best like no one every was? Take this quiz to find out if you really have what it takes to become a Pokemon master! Be careful of wrong answers!";
+  startButtonAgain.textContent = "Start";
+  pokemonIntro.appendChild(pokemonHeading);
+  pokemonIntro.appendChild(pokemonPara);
+  pokemonIntro.appendChild(startButtonAgain);
+  counter = 0;
+  secondsLeft = 75;
+  console.log(startButtonAgain);
+  console.log(container.childNodes);
+});
+
+startButtonAgain.addEventListener("click", function(e) {
+  let target = e.target;
+  setTime();
+  container.removeChild(container.childNodes[0]);
+  container.appendChild(newContainer);
+  question.textContent = questions[counter].title;
+  newContainer.appendChild(question);
+
+  for (let i = 0; i < 4; i++) {
+    let button = createNewElement(
+      "button",
+      "btn",
+      questions[counter].choices[i],
+      "reply_click(this.id)"
+    );
+    button.textContent = questions[counter].choices[i];
+    newContainer.appendChild(button);
+    console.log(button);
+  }
+  console.log(container.childNodes);
+});
+
+clearAll.addEventListener("click", function(e) {
+  for (let i = 0; i < list.childNodes.length; i++) {
+    list.removeChild(list.childNodes[0]);
+  }
+  console.log(list);
+});
