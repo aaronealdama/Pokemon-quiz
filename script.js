@@ -48,16 +48,13 @@ let announcer = createNewElement("div", "announcer");
 let list = createNewElement("ul", "list");
 let highScoreContainer = createNewElement("div", "highscore-container");
 let buttonContainer = createNewElement("div", "button-container");
-let goBackButton = createNewElement("button", "back");
+let goBackButton = createNewElement("button", "btn btn-success back");
 let goBack = document.querySelector(".back");
-let clearAll = createNewElement("button", "clear");
+let clearAll = createNewElement("button", "btn btn-danger clear");
 let pokemonIntro = createNewElement("div", "pokemon-intro");
 let pokemonHeading = createNewElement("h1", "heading");
 let pokemonPara = createNewElement("p", "para");
-let startButtonAgain = createNewElement(
-  "button",
-  "start-button",
-);
+let startButtonAgain = createNewElement("button", "start-button");
 let viewButtonContainer = document.querySelector(".view-button-container");
 let viewButton = createNewElement("button", "view", "view-button");
 let counter = 0;
@@ -73,7 +70,7 @@ function createNewElement(element, classTitle, id, onClickResponse) {
 }
 
 function setTime() {
-   timerInterval = setInterval(function() {
+  timerInterval = setInterval(function() {
     secondsLeft--;
     timer.textContent = secondsLeft;
 
@@ -120,7 +117,7 @@ startButton.addEventListener("click", function(e) {
   for (let i = 0; i < 4; i++) {
     let button = createNewElement(
       "button",
-      "btn",
+      "btn btn-info",
       questions[counter].choices[i],
       "reply_click(this.id)"
     );
@@ -227,12 +224,12 @@ startButtonAgain.addEventListener("click", function(e) {
   navbar.appendChild(viewButtonContainer);
   viewButtonContainer.appendChild(viewButton);
   viewButton.textContent = "View Highscores";
-  while(container.childNodes.length !== 0) {
+  while (container.childNodes.length !== 0) {
     for (let i = 0; i < container.childNodes.length; i++) {
       container.removeChild(container.childNodes[0]);
     }
   }
-  
+
   container.appendChild(newContainer);
   question.textContent = questions[counter].title;
   newContainer.appendChild(question);
@@ -240,7 +237,7 @@ startButtonAgain.addEventListener("click", function(e) {
   for (let i = 0; i < 4; i++) {
     let button = createNewElement(
       "button",
-      "btn",
+      "btn btn-info",
       questions[counter].choices[i],
       "reply_click(this.id)"
     );
@@ -251,7 +248,6 @@ startButtonAgain.addEventListener("click", function(e) {
 });
 
 clearAll.addEventListener("click", function(e) {
-  
   while (list.childNodes.length !== 0) {
     for (let i = 0; i <= list.childNodes.length; i++) {
       list.removeChild(list.childNodes[0]);
@@ -260,19 +256,19 @@ clearAll.addEventListener("click", function(e) {
   console.log(list.childNodes.length);
 });
 
-  viewButton.addEventListener("click", function(e) {
+viewButton.addEventListener("click", function(e) {
   clearInterval(timerInterval);
   timer.textContent = "";
-  while(newContainer.childNodes.length !== 0) {
+  while (newContainer.childNodes.length !== 0) {
     for (let i = 0; i < newContainer.childNodes.length; i++) {
-      newContainer.removeChild(newContainer.childNodes[0])
+      newContainer.removeChild(newContainer.childNodes[0]);
     }
   }
-  while(container.childNodes.length !== 0) {
-  for (let i = 0; i <= container.childNodes.length; i++) {
-    container.removeChild(container.childNodes[0]);
+  while (container.childNodes.length !== 0) {
+    for (let i = 0; i <= container.childNodes.length; i++) {
+      container.removeChild(container.childNodes[0]);
+    }
   }
-}
   navbar.removeChild(viewButtonContainer);
   question.textContent = "Highscores";
   container.appendChild(highScoreContainer);
@@ -284,4 +280,4 @@ clearAll.addEventListener("click", function(e) {
   buttonContainer.appendChild(goBackButton);
   buttonContainer.appendChild(clearAll);
   highScoreContainer.appendChild(buttonContainer);
-})
+});
