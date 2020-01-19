@@ -88,17 +88,17 @@ function setTime() {
         }
       }
       question.textContent = "You are done!";
-      container.appendChild(question);
+      newContainer.appendChild(question);
       announcer.textContent =
         "Your final score is " + localStorage.getItem("highscore");
-      container.appendChild(announcer);
-      container.appendChild(initialContainer);
+      newContainer.appendChild(announcer);
+      newContainer.appendChild(initialContainer);
       initials.textContent = "Your initials";
       initials.appendChild(inputField);
       initials.appendChild(submit);
       submit.textContent = "Submit";
       initialContainer.appendChild(initials);
-
+      container.appendChild(newContainer);
       console.log(container.childNodes);
     }
     checker.textContent = "";
@@ -147,7 +147,6 @@ newContainer.addEventListener("click", function(e) {
 });
 
 function reply_click(clicked_id) {
-  console.log(clicked_id);
   if (clicked_id !== questions[counter].answer) {
     secondsLeft -= 15;
     checker.textContent = "You are wrong";
@@ -155,7 +154,6 @@ function reply_click(clicked_id) {
     checker.textContent = "You are right";
   }
   newContainer.appendChild(checker);
-  console.log(questions[counter].answer);
   counter++;
 }
 
@@ -178,7 +176,7 @@ submit.addEventListener("click", function(e) {
   for (let i = 0; i <= container.childNodes.length; i++) {
     container.removeChild(container.childNodes[0]);
   }
-  container.removeChild(container.childNodes[0]);
+  // container.removeChild(container.childNodes[0]);
   question.textContent = "Highscores";
   container.appendChild(highScoreContainer);
   highScoreContainer.appendChild(question);
