@@ -1,6 +1,7 @@
 .container {
   display: flex;
   justify-content: center;
+  margin-top: 50px;
 }
 
 .btn-info {
@@ -30,4 +31,8 @@ ul {
 
 .list-item {
   margin: 10px;
+}
+
+.navbar {
+  margin-top: 20px;
 }
