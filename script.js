@@ -30,6 +30,7 @@ let questions = [
     answer: "The champion"
   }
 ];
+// array containing my questions and answers to the quiz
 
 let navbar = document.querySelector(".navbar");
 let startButton = document.querySelector("#start-button");
@@ -54,12 +55,15 @@ let clearAll = createNewElement("button", "btn btn-danger clear");
 let pokemonIntro = createNewElement("div", "pokemon-intro");
 let pokemonHeading = createNewElement("h1", "heading");
 let pokemonPara = createNewElement("p", "para");
-let startButtonAgain = createNewElement("button", "start-button");
+let startButtonAgain = createNewElement(
+  "button",
+  "start-button btn btn-primary"
+);
 let viewButtonContainer = document.querySelector(".view-button-container");
 let viewButton = createNewElement("button", "view", "view-button");
-let counter = 0;
-let secondsLeft = 75;
-let scores = [];
+let counter = 0; // initial counter which will be key in generating content
+let secondsLeft = questions.length * 15; // initial value for the timer
+let scores = []; // scores array which is where all the local storage data will go
 
 function createNewElement(element, classTitle, id, onClickResponse) {
   let newItem = document.createElement(element);
@@ -67,17 +71,16 @@ function createNewElement(element, classTitle, id, onClickResponse) {
   newItem.setAttribute("id", id);
   newItem.setAttribute("onClick", onClickResponse);
   return newItem;
-}
+} // function that creates and sets multiple attributes to created elements
 
 function setTime() {
   timerInterval = setInterval(function() {
     secondsLeft--;
     timer.textContent = secondsLeft;
-
     if (secondsLeft === 0 || secondsLeft < 0 || counter === questions.length) {
       if (secondsLeft < 0) {
         timer.textContent = 0;
-      }
+      } // if secondsLeft is less than or equal to 0 or counter is 5 generate the done page
       clearInterval(timerInterval);
       localStorage.setItem("highscore", timer.textContent);
       timer.textContent = "";
@@ -99,11 +102,10 @@ function setTime() {
       submit.textContent = "Submit";
       initialContainer.appendChild(initials);
       container.appendChild(newContainer);
-      console.log(container.childNodes);
     }
     checker.textContent = "";
   }, 1000);
-}
+} // set timer function that counts down and also checks conditions when met generate the done screen
 
 startButton.addEventListener("click", function(e) {
   let target = e.target;
@@ -119,13 +121,14 @@ startButton.addEventListener("click", function(e) {
       "button",
       "btn btn-info",
       questions[counter].choices[i],
-      "reply_click(this.id)"
+      "reply_click(this.id)" // function reply_click which is specified on the onclick attribute of the button with it's id
     );
     button.textContent = questions[counter].choices[i];
     newContainer.appendChild(button);
     console.log(button);
   }
 });
+// start button event listener that generates the first question content into the page
 
 newContainer.addEventListener("click", function(e) {
   let target = e.target;
@@ -135,16 +138,15 @@ newContainer.addEventListener("click", function(e) {
       for (let i = 0; i <= 4; i++) {
         newContainer.removeChild(newContainer.childNodes[0]);
       }
-      console.log(newContainer);
       return;
-    }
+    } // if counter is at or greater than questions length, buttons are removed from page
     question.textContent = questions[counter].title;
     for (let i = 0; i < 4; i++) {
       buttons[i].textContent = questions[counter].choices[i];
       buttons[i].setAttribute("id", questions[counter].choices[i]);
-    }
+    } // changes the text content in the buttons depending on the counter
   }
-});
+}); // newContainer event listener which updates the question and buttons content
 
 function reply_click(clicked_id) {
   if (clicked_id !== questions[counter].answer) {
@@ -155,10 +157,10 @@ function reply_click(clicked_id) {
   }
   newContainer.appendChild(checker);
   counter++;
-}
+} // reply_click function which responds to the button clicked id value, if the id value matches the answer displays "you are right" or "you are wrong" to a new container
 
 submit.addEventListener("click", function(e) {
-  localStorage.setItem("initials", inputField.value);
+  localStorage.setItem("initials", inputField.value); // pushes value of input field to local storage
   for (let i = 0; i < scores.length; i++) {
     if (scores.length === 0) {
       break;
@@ -168,15 +170,14 @@ submit.addEventListener("click", function(e) {
     if (scores[i] === "") {
       scores.shift();
     }
-  }
+  } // removes whitespaces from the scores array while keeping the current score user has into the array
 
   scores.push(
     localStorage.getItem("initials") + " " + localStorage.getItem("highscore")
-  );
+  ); // pushes initials and highscore into the array
   for (let i = 0; i <= container.childNodes.length; i++) {
     container.removeChild(container.childNodes[0]);
   }
-  // container.removeChild(container.childNodes[0]);
   question.textContent = "Highscores";
   container.appendChild(highScoreContainer);
   highScoreContainer.appendChild(question);
@@ -187,8 +188,7 @@ submit.addEventListener("click", function(e) {
   buttonContainer.appendChild(goBackButton);
   buttonContainer.appendChild(clearAll);
   highScoreContainer.appendChild(buttonContainer);
-  console.log(scores);
-});
+}); // generates highscores page
 
 function renderScores() {
   for (let i = 0; i < scores.length; i++) {
@@ -196,9 +196,8 @@ function renderScores() {
     let listItem = createNewElement("li", "list-item");
     listItem.textContent = finalScore;
     list.appendChild(listItem);
-    console.log(list);
   }
-}
+} // function appends new list items connected to the scores in local storage
 
 goBackButton.addEventListener("click", function(e) {
   container.removeChild(container.childNodes[0]);
@@ -211,10 +210,8 @@ goBackButton.addEventListener("click", function(e) {
   pokemonIntro.appendChild(pokemonPara);
   pokemonIntro.appendChild(startButtonAgain);
   counter = 0;
-  secondsLeft = 75;
-  console.log(startButtonAgain);
-  console.log(container.childNodes);
-});
+  secondsLeft = questions.length * 15;
+}); // go back button regenerates the content in the index page and resets counter to 0 and seconds left to 75
 
 startButtonAgain.addEventListener("click", function(e) {
   let target = e.target;
@@ -226,12 +223,10 @@ startButtonAgain.addEventListener("click", function(e) {
     for (let i = 0; i < container.childNodes.length; i++) {
       container.removeChild(container.childNodes[0]);
     }
-  }
-
+  } // event listener tied to the start button generated from the go back button
   container.appendChild(newContainer);
   question.textContent = questions[counter].title;
   newContainer.appendChild(question);
-
   for (let i = 0; i < 4; i++) {
     let button = createNewElement(
       "button",
@@ -241,8 +236,7 @@ startButtonAgain.addEventListener("click", function(e) {
     );
     button.textContent = questions[counter].choices[i];
     newContainer.appendChild(button);
-  }
-  console.log(container);
+  } // for loop which creates the buttons again
 });
 
 clearAll.addEventListener("click", function(e) {
@@ -251,8 +245,7 @@ clearAll.addEventListener("click", function(e) {
       list.removeChild(list.childNodes[0]);
     }
   }
-  console.log(list.childNodes.length);
-});
+}); // event listener which clears all the high scores
 
 viewButton.addEventListener("click", function(e) {
   clearInterval(timerInterval);
@@ -261,12 +254,7 @@ viewButton.addEventListener("click", function(e) {
     for (let i = 0; i < newContainer.childNodes.length; i++) {
       newContainer.removeChild(newContainer.childNodes[0]);
     }
-  }
-  while (container.childNodes.length !== 0) {
-    for (let i = 0; i <= container.childNodes.length; i++) {
-      container.removeChild(container.childNodes[0]);
-    }
-  }
+  } // while loop which removes the buttons from the new container so when the start button is run and the buttons are created there will only be 4
   navbar.removeChild(viewButtonContainer);
   question.textContent = "Highscores";
   container.appendChild(highScoreContainer);
@@ -278,4 +266,4 @@ viewButton.addEventListener("click", function(e) {
   buttonContainer.appendChild(goBackButton);
   buttonContainer.appendChild(clearAll);
   highScoreContainer.appendChild(buttonContainer);
-});
+}); // event listener which removes content and updates it with content for the highscores page
